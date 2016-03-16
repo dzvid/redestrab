@@ -1,0 +1,21 @@
+Para cada elemento de rede cadastrado, o gerente deve 
+solicitar informações sobre:
+- % de uso de memoria;
+- % uso de cpu;
+- % uso de disco;
+Emitir um sinal para um celular caso um desses parametros
+ultrapasse 90% de uso ou se o recurso sair da rede.
+bit.ly/1tk3fE4 - Linux SNMP OID’s for CPU,Memory and Disk Statistics
+bit.ly/1S4JjxK - Monitor a Windows Server using SNMP
+bit.ly/1Ugwbc8 - Testing your SNMP Implementation
+bit.ly/254Qux1 - Monitoring System Parameters like Memory, CPU and Disks on Linux Systems via SNMP
+bit.ly/1RPg4MR - Finding CPU/Mem Utilization for Windows system
+bit.ly/1PcBkKq - Pegar informações de CPU via SNMP
+    
+- Salvar os elementos de rede em um arquivo(?);
+- Se salvar num arquivo fazer um script php pra carregar os dispositivos cadastrados numa tabela;
+- Cada entrada da tabela sera um link;
+- Clicando no link exibira as informações de uso da maquina;
+- Caso seja maior que 90 ou nao exista, emitir umm aviso para o celular;
+- Criar um script criando socket pra mandar uma mensagem de erro para o celular;
+- Fazer um app pra notificaçao(?)
