@@ -19,3 +19,31 @@ bit.ly/1PcBkKq - Pegar informações de CPU via SNMP
 - Caso seja maior que 90 ou nao exista, emitir umm aviso para o celular;
 - Criar um script criando socket pra mandar uma mensagem de erro para o celular;
 - Fazer um app pra notificaçao(?)
+
+
+ $alloc_unity_size = convertArrayToInt(treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.2.3.1.4")));
+  $total_storage_size = convertArrayToInt(treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.2.3.1.5")));
+  $total_storage_used = convertArrayToInt(treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.2.3.1.6")));
+  $cpu_usage = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.3.3.1.2"));
+  
+  
+  
+  https://lists.oetiker.ch/pipermail/mrtg/2006-September/031886.html
+  .1.3.6.1.2.1.25.2.3.1.2 will give storage types (differentiating between
+Floppy, HD, CD, Virtual and RAM)
+.1.3.6.1.2.1.25.2.3.1.3 will give drive letters, labels and in the case
+of Virt/RAM it just says Virtual Memory or Physical Memory
+.1.3.6.1.2.1.25.2.3.1.4 gives the allocation unit size (multiply .5/.6
+below by this to get the real totals)
+.1.3.6.1.2.1.25.2.3.1.5 gives the total storage size (multiply by .4
+above to get actual bytes)
+.1.3.6.1.2.1.25.2.3.1.6 gives the total storage used (multiply by .4
+above to get actual bytes)
+.1.3.6.1.2.1.25.2.3.1.7 give the total storage allocation failures (HD
+errors?)
+
+On Windows, CPU utilization can be queried through the following MIB: .1.3.6.1.2.1.25.3.3.1.2
+
+http://stackoverflow.com/questions/11924446/how-can-i-find-what-is-oid-for-cpu-usage-in-windows-7
+http://www.loriotpro.com/ServiceAndSupport/How_to/How_to_control_Memory_usage.php
+

@@ -13,10 +13,6 @@
          <td width="546"><input id="ip" maxlength="30" name="ip" size="60" type="text"></td>
          <br>
          <br>
-         <tr>
-             <td><font face="Comic SansMSa"><font color="black"><h3>Object ID: (Informação gerenciada)</h3></td>
-             <td width="546"><input id="id" maxlength="30" name="id" size="60" type="text"></td>
-             </tr>
         <tr><td align=center colspan=3>
             <input id="pesquisar" type=submit value="Pesquisar">
             <input type=reset value="Limpar"></td></tr>
