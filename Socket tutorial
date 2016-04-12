@@ -1,0 +1,124 @@
+
+- Creating a socket
+$sock = socket_create(AF_INET, SOCK_STREAM, 0);
+
+Address Family : AF_INET (this is IP version 4)
+Type : SOCK_STREAM (this means connection oriented TCP protocol)
+Protocol : 0 [ or IPPROTO_IP This is IP protocol]
+
+
+Error handling
+
+If any of the socket functions fail then the error information can be retrieved using the socket_last_error and socket_strerror functions.
+	
+if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Couldn't create socket: [$errorcode] $errormsg \n");
+}
+ 
+echo "Socket created";
+
+Note:
+Apart from SOCK_STREAM type of sockets there is another type called SOCK_DGRAM which indicates the UDP protocol. This type of socket is non-connection socket. In this tutorial we shall stick to SOCK_STREAM or TCP sockets. 
+
+- Connect to a Server
+
+We connect to a remote server on a certain port number. So we need 2 things , IP address and port number to connect to. So you need to know the IP address of the remote server you are connecting to. Here we used the ip address of google.com as a sample. A little later on we shall see how to find out the ip address of a given domain name.
+
+The last thing needed is the connect function. It needs a socket and a sockaddr structure to connect to. Here is a code sample.
+	
+if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Couldn't create socket: [$errorcode] $errormsg \n");
+}
+ 
+echo "Socket created \n";
+ 
+if(!socket_connect($sock , '74.125.235.20' , 80))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Could not connect: [$errorcode] $errormsg \n");
+}
+ 
+echo "Connection established \n";
+
+Run the program
+$ php /var/www/socket.php
+Socket created
+Connection established
+
+It creates a socket and then connects. Try connecting to a port different from port 80 and you should not be able to connect which indicates that the port is not open for connection. This logic can be used to build a port scanner.
+
+OK, so we are now connected. Lets do the next thing , sending some data to the remote server.
+
+Quick Note
+
+The concept of "connections" apply to SOCK_STREAM/TCP type of sockets. Connection means a reliable "stream" of data such that there can be multiple such streams each having communication of its own. Think of this as a pipe which is not interfered by other data.
+
+Other sockets like UDP , ICMP , ARP dont have a concept of "connection". These are non-connection based communication. Which means you keep sending or receiving packets from anybody and everybody.
+
+- Sending Data
+
+Function send will simply send data. It needs the socket descriptor , the data to send and its size.
+Here is a very simple example of sending some data to google.com ip :
+
+if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Couldn't create socket: [$errorcode] $errormsg \n");
+}
+ 
+echo "Socket created \n";
+ 
+//Connect socket to remote server
+if(!socket_connect($sock , '74.125.235.20' , 80))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Could not connect: [$errorcode] $errormsg \n");
+}
+ 
+echo "Connection established \n";
+ 
+$message = "GET / HTTP/1.1\r\n\r\n";
+ 
+//Send the message to the server
+if( ! socket_send ( $sock , $message , strlen($message) , 0))
+{
+    $errorcode = socket_last_error();
+    $errormsg = socket_strerror($errorcode);
+     
+    die("Could not send data: [$errorcode] $errormsg \n");
+}
+ 
+echo "Message send successfully \n";
+
+In the above example , we first connect to an ip address and then send the string message "GET / HTTP/1.1\r\n\r\n" to it.
+The message is actually a http command to fetch the mainpage of a website.
+
+Now that we have send some data , its time to receive a reply from the server. So lets do it.
+
+Note
+
+When sending data to a socket you are basically writing data to that socket. This is similar to writing data to a file. Hence you can also use the write function to send data to a socket. Later in this tutorial we shall use write function to send data.
+
+- Close socket
+
+Function socket_close is used to close the socket.
+1
+	
+socket_close($sock);
+
+Thats it.
+http://www.binarytides.com/php-socket-programming-tutorial/
