@@ -74,11 +74,14 @@ function printAllInfo($ip) {
           $total_memory_used = ($total_storage_used[$i]*$alloc_unity_size[$i])/(1073741824);
           
           if($total_memory_used >= ($total_memory)){
-              $armazenamento = TRUE;
-          }else{
-              $armazenamento = FALSE;
+            $armazenamento = TRUE;  
           }
-  }
+    }
+    /*apenas verificaçao de segurança*/
+    if($armazenamento != TRUE){
+        $armazenamento = FALSE;
+    }
+              
       echo '<tr>';
           echo '<th colspan="3"><b>CPU</b></th>';
       echo '</tr>';
@@ -95,10 +98,12 @@ function printAllInfo($ip) {
       /*verifica se alguma cpu tem problema*/
       if($cpu_usage[$i]>=90){
         $cpu_uso = TRUE; 
-      }else{
-        $cpu_uso = FALSE;  
       }
   }
+  /*apenas verificando se esta tudo ok*/
+  if($cpu_uso != TRUE){
+        $cpu_uso =  FALSE; 
+    }
   echo '</table>';
   echo '<BR>';
   
