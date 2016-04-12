@@ -31,7 +31,7 @@ function printAllInfo($ip) {
     $cpu_uso = FALSE;    
     $mensagem;
     $mensagem_armazenamento = 'Unidades com problema: ';
-  	$mensagem_cpu_uso = "CPU sem problemas";
+  	$mensagem_cpu_uso = "CPU com problemas:";
   
   /*nome do host*/
   $host_name = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.1.5.0"));
@@ -51,7 +51,7 @@ function printAllInfo($ip) {
   
   echo '<table border=1>';
       echo '<tr>';
-          echo '<th colspan="4"><b>Gerenciador tabajara</b></th>';
+          echo '<th colspan="4"><b>Gerenciador Skynet</b></th>';
       echo '</tr>';
       echo '<tr>';
           echo '<td><b><i>Host:</i></b></td>';
@@ -107,9 +107,12 @@ function printAllInfo($ip) {
       /*verifica se alguma cpu tem problema*/
       if($cpu_usage[$i]>=90){
         $cpu_uso = TRUE;
-        $mensagem_cpu_uso = 'CPU com uso acima de 90%';
+        $mensagem_cpu_uso .= ' CPU:'.($i+1).' ';
       }
   }
+  if($cpu_uso != TRUE){
+    $mensagem_cpu_uso ="CPU sem problemas";
+      }
   echo '</table>';
   echo '<BR>';
   
@@ -151,7 +154,7 @@ if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
     echo "Socket created<br/>";        
 }
 /*Conectando a um servidor*/
-if(!socket_connect($sock ,'192.168.43.161',8080))
+if(!socket_connect($sock ,'172.30.15.181',8080))
 {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
