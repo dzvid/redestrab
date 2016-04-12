@@ -38,7 +38,7 @@ function printAllInfo($ip) {
   /*ip da maquina*/
   $current_ip = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.4.20.1.1"));
   
-  $mensagem = 'Host: '.$host_name[0].' Ip address:'.$current_ip[1];
+  $mensagem = 'Host: '.$host_name[0].' Ip address:'.$current_ip[1].' - Ocorreram problemas no dispositivo. ';
  
   /*dispositivos*/
   $devices = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.2.3.1.3"));
@@ -82,7 +82,7 @@ function printAllInfo($ip) {
           
           if(($total_memory_used >= ($total_memory*0.9)) && $total_memory!=0.0){
               $armazenamento = TRUE;
-              $mensagem_armazenamento=$devices[$i].'\n ';
+              $mensagem_armazenamento=$mensagem_armazenamento.' '.$devices[$i];
               
           }
  
@@ -151,7 +151,7 @@ if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
     echo "Socket created<br/>";        
 }
 /*Conectando a um servidor*/
-if(!socket_connect($sock ,'192.168.0.9',8080))
+if(!socket_connect($sock ,'192.168.43.161',8080))
 {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
