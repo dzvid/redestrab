@@ -1,3 +1,6 @@
+<?php
+    date_default_timezone_set('America/Manaus');
+?>
 <html>
 <meta charset="utf-8">
 <head>
