@@ -121,7 +121,11 @@ function printAllInfo($ip) {
   
   /*Etapa de elaboraçãode mensagem*/
   
+<<<<<<< HEAD
   $mensagem = date('H:i, jS F').' '.$mensagem.'Armazenamento: '.$mensagem_armazenamento.' Uso de CPU: '.$mensagem_cpu_uso;
+=======
+  $mensagem = $mensagem.'Armazenamento: '.$mensagem_armazenamento.' Uso de CPU: '.$mensagem_cpu_uso;
+>>>>>>> origin/master
   
   
   /*---------------------------------------------------------------------------------------------------*/
@@ -154,7 +158,7 @@ if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
     echo "Socket created<br/>";        
 }
 /*Conectando a um servidor*/
-if(!socket_connect($sock ,'192.168.0.9',8080))
+if(!socket_connect($sock ,'172.30.15.181',8080))
 {
     $errorcode = socket_last_error();
     $errormsg = socket_strerror($errorcode);
