@@ -121,11 +121,7 @@ function printAllInfo($ip) {
   
   /*Etapa de elaboraçãode mensagem*/
   
-<<<<<<< HEAD
   $mensagem = date('H:i, jS F').' '.$mensagem.'Armazenamento: '.$mensagem_armazenamento.' Uso de CPU: '.$mensagem_cpu_uso;
-=======
-  $mensagem = $mensagem.'Armazenamento: '.$mensagem_armazenamento.' Uso de CPU: '.$mensagem_cpu_uso;
->>>>>>> origin/master
   
   
   /*---------------------------------------------------------------------------------------------------*/
@@ -196,3 +192,4 @@ if( ! socket_send ( $sock , $message , strlen($message) , 0))
  ?>
 </body>
 </html>
+
