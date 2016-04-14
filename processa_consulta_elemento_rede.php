@@ -26,13 +26,20 @@ function printAllInfo($ip) {
     }
     echo "<BR>";
 }
-    $ip = $_POST["ip"];
-    global $armazenamento;
-    global $cpu_uso;    
+        $ip = $_POST["ip"];
+    $armazenamento = FALSE;
+    $cpu_uso = FALSE;    
+    $mensagem;
+    $mensagem_armazenamento = 'Unidades com problema: ';
+  	$mensagem_cpu_uso = "CPU com problemas:";
+  
   /*nome do host*/
   $host_name = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.1.5.0"));
   /*ip da maquina*/
   $current_ip = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.4.20.1.1"));
+  
+  $mensagem = 'Host: '.$host_name[0].' Ip address:'.$current_ip[1].' - Ocorreram problemas no dispositivo. ';
+ 
   /*dispositivos*/
   $devices = treatArray(snmpwalk("$ip", "public", "iso.3.6.1.2.1.25.2.3.1.3"));
   /*tamanho da unidade*/
@@ -44,7 +51,7 @@ function printAllInfo($ip) {
   
   echo '<table border=1>';
       echo '<tr>';
-          echo '<th colspan="4"><b>Gerenciador tabajara</b></th>';
+          echo '<th colspan="4"><b>Gerenciador Skynet</b></th>';
       echo '</tr>';
       echo '<tr>';
           echo '<td><b><i>Host:</i></b></td>';
@@ -73,12 +80,17 @@ function printAllInfo($ip) {
           $total_memory = ($total_storage_size[$i]*$alloc_unity_size[$i])/(1073741824);
           $total_memory_used = ($total_storage_used[$i]*$alloc_unity_size[$i])/(1073741824);
           
-          if($total_memory_used >= ($total_memory)){
+          if(($total_memory_used >= ($total_memory*0.9)) && $total_memory!=0.0){
               $armazenamento = TRUE;
-          }else{
-              $armazenamento = FALSE;
+              $mensagem_armazenamento=$mensagem_armazenamento.' '.$devices[$i];
+              
           }
+ 
   }
+  /*Caso nenhuma unidade tenha problema, exibimos esta mensagem*/
+  	if($armazenamento == FALSE){
+  		$mensagem_armazenamento = 'Nenhuma unidade com problemas';
+  	}  
       echo '<tr>';
           echo '<th colspan="3"><b>CPU</b></th>';
       echo '</tr>';
@@ -94,20 +106,43 @@ function printAllInfo($ip) {
       echo '</tr>';
       /*verifica se alguma cpu tem problema*/
       if($cpu_usage[$i]>=90){
-        $cpu_uso = TRUE; 
-      }else{
-        $cpu_uso = FALSE;  
+        $cpu_uso = TRUE;
+        $mensagem_cpu_uso .= ' CPU:'.($i+1).' ';
       }
   }
+  if($cpu_uso != TRUE){
+    $mensagem_cpu_uso ="CPU sem problemas";
+      }
   echo '</table>';
   echo '<BR>';
   
- /*---------------------------------------------------------------------------------------------------*/
+  
+  
+  
+  /*Etapa de elaboraçãode mensagem*/
+  
+  $mensagem = date('H:i, jS F').' '.$mensagem.'Armazenamento: '.$mensagem_armazenamento.' Uso de CPU: '.$mensagem_cpu_uso;
+  
+  
+  /*---------------------------------------------------------------------------------------------------*/
+  /*Caso ocorra algum problema etapa de envio de mensagem para dispositivo android e email*/
+ /*Etapa de envio de email*/
+ if($armazenamento!=FALSE || $cpu_uso!=FALSE){
+    $subject='Olá!'; // Assunto.
+    $to= 'oliveiradavid007@gmail.com'; // Para.
+    $body= $mensagem; // corpo do texto.
+  
+    if (mail($to,$subject,$body)){
+        echo 'E-mail enviado com sucesso!<br/>';
+    }else{
+        echo 'E-mail não enviado!<br/>';
+    }
+    
+     /*---------------------------------------------------------------------------------------------------*/
  /*Etapa de envio de mensagem via socket para disppositivo android*/
  
  /*criando o socket*/
 $sock = socket_create(AF_INET, SOCK_STREAM, 0);
-
 /*Verificando se o socket foi criado com sucesso*/
 if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
 {
@@ -118,7 +153,6 @@ if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0)))
 }else{
     echo "Socket created<br/>";        
 }
-
 /*Conectando a um servidor*/
 if(!socket_connect($sock ,'192.168.0.9',8080))
 {
@@ -129,9 +163,8 @@ if(!socket_connect($sock ,'192.168.0.9',8080))
 }else{
     echo "Connection established<br/>";
 }
-
 /*Enviando uma mensagem para o servidor*/
-$message = "Salve bro!\n";
+$message = $mensagem;
  
 if( ! socket_send ( $sock , $message , strlen($message) , 0))
 {
@@ -146,23 +179,15 @@ if( ! socket_send ( $sock , $message , strlen($message) , 0))
  
  /*Fechando o socket*/
  socket_close($sock);
-  
-  
-  /*---------------------------------------------------------------------------------------------------*/
- /*Etapa de envio de email*/
- if($armazenamento!=FALSE || $cpu_uso!=FALSE){
-    $subject='Olá!'; // Assunto.
-    $to= 'oliveiradavid007@gmail.com'; // Para.
-    $body= 'Host: '.$host_name[0].' Ip address:'.$current_ip[1].' Armazenamento: '.$armazenamento.' Uso cpu: '.$cpu_uso; // corpo do texto.
-  
-    if (mail($to,$subject,$body)){
-        echo 'E-mail enviado com sucesso!';
-    }else{
-        echo 'E-mail não enviado!';
-    }
+    
+    
+    
  }else{
-     echo 'Yay... nenhum problema!';
+     echo 'Nenhum problema!<br/>';
  }
+ 
+ 
+ 
   
  ?>
 </body>
